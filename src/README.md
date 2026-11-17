@@ -1,7 +1,5 @@
 # Source code — Lab 8 LogiX-VN
 
-> Hướng dẫn bên dưới dành cho bài gốc Day 8. Với fork Day 9, dùng agent `swarm` có sẵn và nộp từ `feature/d09` vào `main`. [Cài đặt Day 9](../README.md), [hướng dẫn nộp Day 9](../SUBMISSION.md).
-
 Toàn bộ code, dữ liệu, config và test của lab nằm trong thư mục này. **Mọi lệnh chạy trong `src/`** (thư mục có file `README.md` này và `requirements.txt`).
 
 - File bắt đầu chạy: `lab8/smoke.py` (kiểm cài đặt), `lab8/run.py` (chạy một claim), `lab8/benchmark.py` (so 4 shape).
@@ -28,7 +26,7 @@ Toàn bộ code, dữ liệu, config và test của lab nằm trong thư mục n
 
 Cần **Python 3.11, 3.12 hoặc 3.13** và `git`. Mọi lệnh chạy trong **thư mục `src/`** của repo (thư mục có file `requirements.txt`).
 
-`<url-repo-nhom>` là URL repo nhóm đã tạo ở bước 0 trong hướng dẫn Day 8. [README gốc](https://github.com/VinUni-AI20k/K5-Day8-From-Workflows-to-Agents/blob/034c6c421c198dae67a9211d15e2587d5a378972/README.md#bắt-đầu).
+`<url-repo-nhom>` là URL **repo nhóm** đã tạo ở bước 0 của [README gốc](../README.md#bắt-đầu), không phải repo đề bài.
 
 Kiểm tra phiên bản Python trước:
 
@@ -124,20 +122,18 @@ Bộ hidden phủ: ticket nói dối, injection, approval hỏng hoặc mượn 
 
 **Điểm yếu cố ý của swarm:** ở seed chia hết cho 5 (seed 55), swarm tin số ngày ghi trong ticket thay vì cột `delay_days`. Trên bộ public, chỗ này lộ ra ở T02: ticket ghi "trễ 5 ngày", order ghi 2 ngày, swarm trả 20.000 VND thay vì từ chối. Vì vậy benchmark public của swarm ra pass ≈ 0.986, pass^5 ≈ 0.929. Trong ma trận student, trial đó được kiểm là *phải fail* với swarm. Shape của nhóm thì phải pass.
 
-Ngưỡng hidden, ba điều kiện must-pass và công thức metric nằm trong tài liệu Day 8. [README gốc](https://github.com/VinUni-AI20k/K5-Day8-From-Workflows-to-Agents/blob/034c6c421c198dae67a9211d15e2587d5a378972/README.md#thế-nào-là-qua-bài), [rubric](https://github.com/VinUni-AI20k/K5-Day8-From-Workflows-to-Agents/blob/034c6c421c198dae67a9211d15e2587d5a378972/RUBRIC.md), [công thức metric](https://github.com/VinUni-AI20k/K5-Day8-From-Workflows-to-Agents/blob/034c6c421c198dae67a9211d15e2587d5a378972/docs/metrics.md).
+Ngưỡng hidden và ba điều kiện must-pass: xem [README gốc](../README.md#thế-nào-là-qua-bài) và [RUBRIC.md](../RUBRIC.md#must-pass-không-bù-điểm). Công thức metric: [docs/metrics.md](../docs/metrics.md).
 
 ## Đọc khi bắt đầu viết shape (CP2)
 
-Đầu buổi (CP1) đọc CHECKPOINTS và các tài liệu Day 8. [README gốc](https://github.com/VinUni-AI20k/K5-Day8-From-Workflows-to-Agents/blob/034c6c421c198dae67a9211d15e2587d5a378972/README.md#đọc-gì-khi-nào).
-
-Khi bắt đầu viết shape, xem các tài liệu sau.
+Đầu buổi (CP1) đọc CHECKPOINTS và docs theo [README gốc](../README.md#đọc-gì-khi-nào). Khi bắt đầu viết shape thì đọc:
 
 - `lab8/shapes/swarm_reference.py`: shape đối chứng. Khối `REFERENCE_WEAKNESS` là chỗ swarm tin ticket. Workflow không được copy khối này.
 - `lab8/durability.py`: transaction và idempotency key `refund:{claim_id}`.
 - `lab8/handoff.py`: allowlist.
 - `lab8/runtime.py`: vòng ReAct và investigator read-only.
 - `config/autonomy_policy.yaml`, `config/tools.manifest.v1.1.yaml`, `harness_map.yaml`.
-- Xem luật nghiệp vụ, `RunResult` và trace mà grader chấm. [Business rules](https://github.com/VinUni-AI20k/K5-Day8-From-Workflows-to-Agents/blob/034c6c421c198dae67a9211d15e2587d5a378972/docs/business_rules.md), [contracts](https://github.com/VinUni-AI20k/K5-Day8-From-Workflows-to-Agents/blob/034c6c421c198dae67a9211d15e2587d5a378972/docs/contracts.md).
+- [docs/business_rules.md](../docs/business_rules.md) và [docs/contracts.md](../docs/contracts.md): luật nghiệp vụ, `RunResult` và trace mà grader chấm.
 
 ## Tự kiểm trên bộ hidden (CP5)
 
@@ -149,4 +145,4 @@ python -m lab8.benchmark --shapes workflow,single,orchestrator --cases student_d
 
 Không có nhãn nên không ra pass rate. Lệnh này cho biết shape có chạy hết 40 claim mà không lỗi không (`status` ≠ `error`), trace có đúng contract không, và có trial nào nghi lộ secret không (`leak_suspect`). Điểm chính thức do grader của giảng viên chấm.
 
-Các lỗi cài đặt và chạy thường gặp nằm trong hướng dẫn Day 8. [Troubleshooting](https://github.com/VinUni-AI20k/K5-Day8-From-Workflows-to-Agents/blob/034c6c421c198dae67a9211d15e2587d5a378972/docs/troubleshooting.md).
+Gặp lỗi khi cài hoặc chạy: xem [docs/troubleshooting.md](../docs/troubleshooting.md).
