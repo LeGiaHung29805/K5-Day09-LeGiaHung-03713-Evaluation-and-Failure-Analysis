@@ -1,5 +1,5 @@
 # Nộp bài (hạn 23:59 cùng ngày)
-PR từ `starter/d09` → `main` của repo nhóm. Chấm commit cuối trước 23:59; commit sau hạn không tính.
+Mở PR từ `starter/d09` → `main` ngay trong fork Lab Day 9. Giảng viên chấm commit cuối trước 23:59.
 
 ## Core (nên xong trước 17:00)
 - [ ] `src/lab9/{stats,graders,evalset}.py` đã hoàn thành TODO M1–M4

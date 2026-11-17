@@ -18,6 +18,14 @@ from lab9 import stats
 from lab9.eval import SPEC, load_spec, per_item
 
 
+def _paired_delta(a: dict, b: dict, spec: dict) -> tuple[float, float, float]:
+    keys = sorted(a)
+    bs = spec.get("bootstrap", {})
+    return stats.paired_bootstrap([a[k] for k in keys], [b[k] for k in keys],
+                                  n_resamples=bs.get("n_resamples", 1000), rng=bs.get("rng", 2027),
+                                  confidence=bs.get("confidence", 0.95))
+
+
 def integrity_check(pr: dict, base: dict, spec: dict, base_spec: dict | None = None) -> list[str]:
     """M7 (Expert): refuse to compare reports that cannot be trusted. Return a list of problems
     (empty = trustworthy). A gate that passes a broken report is worse than no gate.
@@ -55,7 +63,6 @@ def check(pr: dict, base: dict, spec: dict, base_spec: dict | None = None) -> tu
     if problems:
         return ["integrity"], [f"  INTEGRITY {p}" for p in problems]
     blocked, lines = [], []
-    bs = spec.get("bootstrap", {})
     for m in spec["metrics"]:
         mid, th, val = m["id"], m.get("threshold", {}), pr["metrics"].get(m["id"])
         verdict, note = "ok", ""
@@ -70,12 +77,14 @@ def check(pr: dict, base: dict, spec: dict, base_spec: dict | None = None) -> tu
                 verdict = "fail"
         if th.get("no_significant_drop") and val is not None:
             a, b = per_item(pr, mid), per_item(base, mid)
-            keys = sorted(set(a) & set(b))
-            d, lo, hi = stats.paired_bootstrap([a[k] for k in keys], [b[k] for k in keys],
-                                               n_resamples=bs.get("n_resamples", 1000), rng=bs.get("rng", 2027))
-            note = f"Δ {d:+.3f} CI [{lo:+.3f}, {hi:+.3f}]"
-            if hi < 0:
+            if not a or a.keys() != b.keys():
                 verdict = "fail"
+                note = "missing paired item scores"
+            else:
+                d, lo, hi = _paired_delta(a, b, spec)
+                note = f"Δ {d:+.3f} CI [{lo:+.3f}, {hi:+.3f}]"
+                if hi < 0:
+                    verdict = "fail"
         if verdict != "ok" and m.get("blocking"):
             blocked.append(mid)
         label = {"ok": "ok", "missing": "MISSING"}.get(verdict, "BLOCK" if m.get("blocking") else "warn")
