@@ -1,5 +1,12 @@
 # Nộp bài (hạn 23:59 cùng ngày)
-Mở PR từ `starter/d09` → `main` ngay trong fork Lab Day 9. Giảng viên chấm commit cuối trước 23:59.
+
+**Người nộp bài** · Le Gia Hung
+
+1. Kiểm tra lịch sử của `feature/d09` có hai commit theo thứ tự v0 (M0–M4) và v1 (M5–M7).
+2. Push nhánh bằng `git push -u origin feature/d09`.
+3. Nộp PR với nhánh nguồn `feature/d09` và nhánh đích `main` trong cùng fork Day 9. Kiểm tra hai job `eval-gate` và `eval-gate-v2` trong PR. [PR #2 của bài nộp](https://github.com/LeGiaHung29805/K5-Day09-LeGiaHung-03713-Evaluation-and-Failure-Analysis/pull/2).
+
+Giảng viên chấm commit cuối trước 23:59.
 
 ## Core (nên xong trước 17:00)
 - [ ] `src/lab9/{stats,graders,evalset}.py` đã hoàn thành TODO M1–M4

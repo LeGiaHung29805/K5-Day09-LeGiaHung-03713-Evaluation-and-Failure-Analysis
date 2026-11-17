@@ -1,5 +1,7 @@
 # K5 · Day 9 · Lab — Evaluation & Failure Analysis (LogiX-VN)
 
+**Người nộp bài** · Le Gia Hung
+
 > Nối tiếp Lab 8. Lab 8 trả lời "agent có chạy không"; Lab 9 trả lời **"làm sao biết bản mới tốt hơn — và chặn được bản tệ trước khi merge"**.
 > Không cần API key: MockLLM + judge replay. **Không Langfuse / OTel** (observability học ở Day 14).
 
@@ -18,7 +20,7 @@
 
 ## Cài đặt (M0) trên fork Day 9
 
-Nhánh `starter/d09` đã chép các tệp được Git theo dõi trong `src/` từ commit Day 8 `034c6c4` của giảng viên. Workflow dùng agent `swarm`, fixture công khai và `requirements.txt` ngay trong fork Day 9. [Repo Day 8 của giảng viên](https://github.com/VinUni-AI20k/K5-Day8-From-Workflows-to-Agents).
+Nhánh `feature/d09` dùng mã agent `swarm`, fixture công khai và `requirements.txt` từ commit Day 8 `034c6c4` của giảng viên. [Repo Day 8 của giảng viên](https://github.com/VinUni-AI20k/K5-Day8-From-Workflows-to-Agents).
 
 **Không cần hoàn thiện Lab 8.** M0–M4 (baseline, gate, `fixed`, `seeded_regression`) đều chạy trên shape `swarm`, tức `lab8/shapes/swarm_reference.py` do giảng viên cung cấp, không dùng `workflow`/`single`/`orchestrator` của nhóm. Repo Lab 8 còn TODO vẫn làm được Lab 9, miễn là package `src/lab8/` còn nguyên.
 
@@ -26,18 +28,16 @@ Nhánh `starter/d09` đã chép các tệp được Git theo dõi trong `src/` t
 
 ```bash
 # Python ≥ 3.11, trong môi trường ảo đã kích hoạt
-git switch starter/d09
+git switch feature/d09
 cd src
 python -m pip install -r requirements.txt -r requirements-lab9.txt
 python -m lab9.smoke
 python -m lab9.evalset --build --check
 ```
 
-**Baseline cho CI (M4).** Job `eval-gate` đọc report đã commit trong `src/reports/baseline_v1.json`. Sinh baseline bằng agent tham chiếu `swarm` cùng eval set và spec của bài.
+**Baseline cho CI (M4).** Job `eval-gate` đọc `src/reports/baseline_v1.json` từ commit v0. Để tái tạo report, chạy từ `src/`.
 ```bash
-cd src
 python -m lab9.eval --shape swarm --spec config/metric_spec.yaml --out reports/baseline_v1.json
-git add -f reports/baseline_v1.json && git commit -m "chore: add eval baseline v1"
 ```
 Workflow chạy khi mở PR (hoặc chạy tay ở tab Actions), không chạy khi push thẳng lên `main`.
 
@@ -51,12 +51,11 @@ Core (M0–M4, 60đ) chứng minh gate chặn được một regression **rõ r�
 
 ```bash
 cd src
-# M5 — eval set v2: điền config/fm_map.yaml (cơ chế tấn công -> mã FM của bạn), rồi build + check
+# M5 — build và kiểm tra eval set v2 theo config/fm_map.yaml
 python -m lab9.evalset --v2 --build          # mỗi FM bị tấn công cần >= 3 item
-# Điền TODO trong config/metric_spec_v2.yaml (slices, pass_hat_5, metric FM-08) và slice_check trong gate.py
 python -m lab9.eval --shape swarm --spec config/metric_spec_v2.yaml --out reports/baseline_v2.json
 
-# M6 — nhiễu: cài stats.pass_at_k / pass_hat_k; chọn ngưỡng NGOÀI dải nhiễu A/A
+# M6 — đo nhiễu A/A trên hai bộ seed
 python -m lab9.mutation --spec config/metric_spec_v2.yaml --aa 66,77,88,99,110
 
 # M5–M7 — scorecard: mọi variant công khai qua graders + spec + gate CỦA BẠN
@@ -89,9 +88,9 @@ Lưu ý: một bug chỉ xuất hiện ở 1/3 seed (`rare`) **không** phát hi
 
 ## Bản đồ file
 ```
-src/lab9/evalset.py   eval set v1 + provenance + check        (TODO M1: failure_modes)
-src/lab9/graders.py   pydantic-evals Evaluators               (TODO M3: 2 grader)
-src/lab9/stats.py     confusion, P/R, kappa, RG, bootstrap    (TODO M2, M4)
+src/lab9/evalset.py   build và kiểm tra eval set v1/v2, mã FM và provenance
+src/lab9/graders.py   pydantic-evals Evaluators
+src/lab9/stats.py     calibration, paired bootstrap, pass@k và pass^k
 src/lab9/trace_case.py trace → bước sai đầu tiên cho 1 claim@seed (docs/trace_case.md)
 src/lab9/judge.py     calibrate judge từ CSV (replay)
 src/lab9/eval.py      chạy 1 shape → reports/eval_<shape>.json có run_id
@@ -99,7 +98,11 @@ src/lab9/gate.py      PR vs baseline theo metric_spec → exit 0/1
 src/lab9/variants.py  fixed / seeded_regression (+ honest_refactor, slice_, flaky_regression cho v2)
 src/lab9/mutation.py  scorecard: variant công khai qua gate của bạn; --aa = nhiễu A/A   (M5–M7)
 src/lab9/traps.py     sinh report đã bị làm đẹp để thử integrity_check                  (M7)
-src/config/metric_spec_v2.yaml, fm_map.yaml, data/eval/adversarial_v2.json             (TODO M5, M6)
+src/config/metric_spec_v2.yaml, src/config/fm_map.yaml, src/data/eval/adversarial_v2.json
 src/config/metric_spec.yaml   ngưỡng (ratchet: cùng eval-set version chỉ được chặt hơn)
 ```
 Quy tắc: không sửa file `lab8/`; không sửa tay `reports/`; không đặt nhãn inline trong item.
+
+## Nộp bài
+
+Push `feature/d09` lên `origin` và dùng `main` làm nhánh đích trong cùng fork Day 9. Lịch sử bài nộp có hai commit theo thứ tự v0 (M0–M4) và v1 (M5–M7). [Checklist nộp bài](SUBMISSION.md).

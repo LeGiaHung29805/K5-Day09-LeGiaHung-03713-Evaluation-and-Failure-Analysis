@@ -2,6 +2,19 @@
 
 Mọi lệnh dưới đây chạy trong thư mục `src/`, nên file JSON được ghi vào `src/reports/`.
 
+## Report nộp Lab Day 9
+
+| File | Lệnh tạo |
+| --- | --- |
+| `baseline_v1.json` | `python -m lab9.eval --shape swarm --out reports/baseline_v1.json` |
+| `eval_fixed.json` | `python -m lab9.eval --shape fixed` |
+| `eval_seeded_regression.json` | `python -m lab9.eval --shape seeded_regression` |
+| `baseline_v2.json` | `python -m lab9.eval --shape swarm --spec config/metric_spec_v2.yaml --out reports/baseline_v2.json` |
+
+Ba report v1 được nộp trong commit v0. Baseline v2 được nộp trong commit v1. [Checklist nộp Day 9](../../SUBMISSION.md).
+
+## Báo cáo của bài gốc Day 8
+
 Nhóm **commit** các file do công cụ của lab sinh ra. Đây là bằng chứng nộp bài:
 
 | File | Lệnh tạo | Bắt buộc |

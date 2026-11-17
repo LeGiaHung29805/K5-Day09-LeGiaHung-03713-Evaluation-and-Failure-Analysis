@@ -27,7 +27,7 @@ Baseline v1 `E-swarm-20261117-3e9c` dùng 14 item × 5 seed. CI paired bootstrap
 | `pass_5` | ≥ 0,80 | Theo dõi | 0,9286 |
 | `cost_per_success` | Tăng tối đa 10% | Theo dõi | 49,567 |
 
-[Report baseline v1](../src/reports/baseline_v1.json), [eval card](eval_card.md).
+V2 bổ sung sàn `pass_hat_5` và ba slice. Gate kiểm tra đủ item × seed, tính toàn vẹn điểm và ratchet khi có spec từ nhánh gốc. [Report baseline v1](../src/reports/baseline_v1.json), [eval card và kết quả v2](eval_card.md).
 
 ## Failure mode và cách chấm
 
@@ -45,6 +45,6 @@ Tiền, dữ liệu bí mật và approval dùng grader code. `tone_ok` được
 
 ## Xử lý gate và cập nhật spec
 
-Người duy trì fork là vai trò xử lý gate đỏ, đọc metric hoặc trace lỗi và chạy lại sau khi sửa. Gate exit 1 thì dừng merge. Product owner duyệt phạm vi pilot và ghi quyết định trên PR. Bằng chứng hiện có chỉ gồm 14 claim v1, MockLLM và judge replay. Pilot trên traffic thật còn cần bộ claim và nhãn đại diện cùng dữ liệu chi phí, độ trễ và độ tin cậy từ model thật.
+Le Gia Hung phụ trách bộ đánh giá, xác nhận phạm vi pilot trên fixture và ghi quyết định trong PR. Khi gate trả exit 1, Le Gia Hung dừng merge, đọc metric hoặc trace lỗi và chạy lại sau khi sửa. Bằng chứng hiện có chỉ gồm 14 claim v1, pack v2, MockLLM và judge replay. Pilot trên traffic thật còn cần bộ claim và nhãn đại diện cùng dữ liệu chi phí, độ trễ và độ tin cậy từ model thật.
 
 Khi đổi tập claim hoặc nhãn, tăng `eval_set_version` và sinh baseline tương ứng. Khi đổi grader hoặc ngưỡng, tăng `metric_spec_version` và ghi lý do vào PR.

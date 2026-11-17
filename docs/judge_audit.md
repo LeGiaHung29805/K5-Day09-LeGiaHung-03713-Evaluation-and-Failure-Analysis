@@ -9,6 +9,8 @@
 
 ## Audit bất đồng
 
+Le Gia Hung đối chiếu các trường hợp dưới đây với nhãn có sẵn trong bộ replay.
+
 | Case | Judge | Người | Kết luận đối chiếu | Thay đổi rubric |
 |---|---|---|---|---|
 | H-008 | PASS | FAIL | Theo người. Cách xưng hô “em/anh” kèm “nha” quá thân mật cho mẫu hỗ trợ. | Cho ví dụ FAIL với xưng hô thân mật, dù câu có lời nhờ lịch sự. |
